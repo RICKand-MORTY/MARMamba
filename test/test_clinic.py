@@ -35,10 +35,15 @@ os.makedirs(data_path, exist_ok=True)
 os.makedirs(save_path, exist_ok=True)
 
 output_dir = save_path + '/output/'
-input_dir = save_path + '/input/'
+input_dir = save_path + '/input_hu/'
+output_hu_dir = save_path + '/output_hu/'
+mask_dir = save_path + '/mask/'
+#nometal_dir = save_path + '/no_metal_input/'
 os.makedirs(input_dir, exist_ok=True)
 os.makedirs(output_dir, exist_ok=True)
-
+os.makedirs(output_hu_dir, exist_ok=True)
+os.makedirs(mask_dir, exist_ok=True)
+#os.makedirs(nometal_dir, exist_ok=True)
 
 # set seed
 seed = opt.seed
@@ -76,6 +81,7 @@ def save_image(file_directory, img):
 
 def image_get_minmax():
     return 0.0, 1.0
+    
 def proj_get_minmax():
     return 0.0, 4.0
 
@@ -87,15 +93,22 @@ def normalize(data, minmax):
     data = data.astype(np.float32)
     data = np.expand_dims(np.transpose(np.expand_dims(data, 2), (2, 0, 1)),0)
     return data
-
+    
+def tohu(X):           # display window as [-175HU, 275HU]
+    CT = (X - 0.192) * 1000 / 0.192
+    CT_win = CT.clamp_(-175, 275)
+    CT_winnorm = (CT_win +175) / (275+175)
+    return CT_winnorm
 
 print('--- Saving images! ---')
 count_nii = 0
 for file_name in os.listdir(data_path):
+    print(f"---------{file_name}---------")
     file_path = data_path+'/'+file_name
     img_nii = nibabel.load(file_path)
     img_data = img_nii.get_fdata()
     total_img = img_data.shape[2]
+    mask_thre = 2500 /1000 * 0.192 + 0.192
     #print(f"shape={img_data.shape}")
     for id in range(total_img):
         #input = img_data[..., id]
@@ -103,12 +116,25 @@ for file_name in os.listdir(data_path):
         image = np.array(Image.fromarray(img_data[:,:,id]).resize((416, 416), PIL.Image.BILINEAR))
         image[image < -1000] = -1000
         image = image / 1000 * 0.192 + 0.192
+        M  = np.zeros((416, 416), dtype='float32')
+        [rowindex, colindex] = np.where(image > mask_thre)
+        M[rowindex, colindex] = 1
         input = image
+        ori_input = torch.Tensor(np.copy(image))
+        #remove metal region
+        no_metal = 1 - M
+        input = image * no_metal
         #input = normalize(input, image_get_minmax()) 
         input = transform_input(input)
-        #input = torch.Tensor(input)
         input = input.unsqueeze(0).cuda()
         output = net(input)
+        output = output.cpu()
+        no_metal = torch.Tensor(no_metal)
+        output = output * no_metal + ori_input * (1 - no_metal)
+        output_hu = tohu(output)
+        ori_input_hu = tohu(ori_input)
+        #ori_input_hu = tohu(ori_input)
+        
         #image_input = normalize(image, image_get_minmax()) 
         #output = normalize(output.data.cpu().numpy(), image_get_minmax())
         #output = output / 255.0
@@ -119,9 +145,11 @@ for file_name in os.listdir(data_path):
         
         #save_image(input_dir + str(count_nii) +'_' + str(id) + '.png', torch.Tensor(image_input))
         #save_image(output_dir + str(count_nii) +'_' + str(id) + '.png', torch.Tensor(output))
-        plt.imsave(input_dir + str(count_nii) +'_' + str(id) + '.png', image, cmap="gray")
-        plt.imsave(output_dir + str(count_nii) +'_' + str(id) + '.png', output.data.cpu().numpy().squeeze(), cmap="gray")
-        #print(f"test {id}.png")
+        plt.imsave(input_dir + str(count_nii) +'_' + str(id) + '.png', ori_input_hu, cmap="gray")
+        plt.imsave(mask_dir + str(count_nii) +'_' + str(id) + '.png', M, cmap="gray")
+        plt.imsave(output_dir + str(count_nii) +'_' + str(id) + '.png', output.data.numpy().squeeze(), cmap="gray")
+        plt.imsave(output_hu_dir + str(count_nii) +'_' + str(id) + '.png', output_hu.data.numpy().squeeze(), cmap="gray")
+        print(f"test {id}.png")
     count_nii += 1
 print("Saving finish!")
 print('--- Testing Start! ---')
