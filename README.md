@@ -1,6 +1,6 @@
 ## MARMamba
 
-This is the source code for MARMamba (MARMamba: A Single-Domain CT Metal Artifact Reduction Model Based on Multi-Scale Mamba).
+This is the source code for MARMamba in paper "**From Attention to Mamba: Pioneering Solution in CT Metal Artifact Reduction**".
 
 ### Architecture
 
