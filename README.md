@@ -47,7 +47,7 @@ The `utils/` directory includes code related to training and test data processin
 
 ### Datasets
 
-[SynDeepLesion][https://github.com/hongwang01/SynDeepLesion]: For training and testing.
+[SynDeepLesion](https://github.com/hongwang01/SynDeepLesion): For training and testing.
 
 [CLINIC-metal](https://github.com/MIRACLE-Center/CTPelvic1K): For visual comparison.
 
