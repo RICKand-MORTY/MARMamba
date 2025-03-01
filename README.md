@@ -41,9 +41,17 @@ MARMamba checkpoint is available at path `checkpoint/MARMamba_ckpt`
 
 ## Document Introduction
 
-The code of MARMamba, MARViT, MARformer and MARPVT are available at model path.
+The codes of MARMamba, MARViT, MARformer, and MARPVT are available at `model/`.
 
-## Training
+The `utils/` directory includes code related to training and test data processing and evaluation metrics.
+
+### Datasets
+
+[SynDeepLesion][https://github.com/hongwang01/SynDeepLesion]: For training and testing.
+
+[CLINIC-metal](https://github.com/MIRACLE-Center/CTPelvic1K): For visual comparison.
+
+### Training
 
 We trained MARMamba on a single RTX 3090. Using the following command to train MARMamba:
 
@@ -51,20 +59,42 @@ We trained MARMamba on a single RTX 3090. Using the following command to train M
 python train_step.py -learning_rate 0.0002 -num_steps 100000 -train_batch_size 8 -crop_size 256 256 -warm_up True -save_step 1000 -Tmax 1000 -exp_name checkpoint/syn -train_data_dir /root/autodl-tmp/SynDeepLesion -val_data_dir /root/autodl-tmp/SynDeepLesion
 ```
 
-We also provide an auto-training script named `run.py` for training by using strategy mentioned in our paper. Modify the parameters in `run.py` and then using `python run.py` to train.
+We also provide an auto-training script named `run.py` for training by using strategy mentioned in our paper. Modify the parameters in `run.py` and then execute `python run.py` to train.
 
 ### Testing
 
-For inference and evaluate on SynDeepLesion dataset, run the following command in the `test` path:
+For inference and evaluation on **SynDeepLesion** dataset, run the following command in the `test/` path:
 
 ```
 python test_deeplesion.py -save_place ./metal -checkpoint ../checkpoint/MARMamba_ckpt -val_data_dir /root/autodl-tmp/SynDeepLesion -test_mode metal
 ```
 
-If you need to evaluate including the metal regions, change parameter `-test_mode metal` to `-test_mode full_image`.
+If you need to evaluate including the metal regions, change the parameter `-test_mode metal` to `-test_mode full_image`.
 
-For evaluate on CLINIC-metal dataset, run the following command in the `test`path:
+To evaluate on **CLINIC-metal** dataset, run the following command in the `test/`path:
 
 ```
 python test_clinic.py --save_path ./real --checkpoint ../checkpoint/MARMamba_ckpt --data_path /root/autodl-tmp/clinic/test
 ```
+
+### Comparison Results
+
+<details>
+<summary><strong>Different Scales of Metal</strong> (click to expand) </summary>
+    <img src='Figures/Metal.png'>
+</details>
+
+<details>
+<summary><strong>Full Images</strong> (click to expand) </summary>
+    <img src='Figures/Full_image.png'>
+</details>
+
+<details>
+<summary><strong>MACs and Memory</strong> (click to expand) </summary>
+    <img src='Figures/MACs_memory.png'>
+</details>
+
+<details>
+<summary><strong>Visual Comparsion on CLINIC-metal</strong> (click to expand) </summary>
+    <img src='Figures/real.png'>
+</details>
