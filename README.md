@@ -1,6 +1,6 @@
 ## MARMamba
 
-This is the source code for MARMamba in paper "**From Attention to Mamba: Pioneering Solution in CT Metal Artifact Reduction**".
+This is the source code for MARMamba in paper "**Balancing Efficiency and Restoration: Lightweight Mamba-Based Model for CT Metal Artifact Reduction**".
 
 ### Architecture
 
