@@ -1,23 +1,32 @@
 import argparse
-from thop import profile
 import os
+import sys
+sys.path.append("../")
 import torch
 from model.mamba import MambaFormer
+from calflops import calculate_flops
 
 input= torch.randn(1, 1, 416, 416).cuda()
 model=MambaFormer(in_channels=1).cuda()
 model.eval()
 total = sum([param.nelement() for param in model.parameters()])
 print("Number of parameter: %.2fM" % (total / 1e6))
-flops, params = profile(model, inputs=(input,))
-print(f"FLOPs: {flops}, Params: {params}")
-print('MACs = ' + str(flops / 1000 ** 3) + 'G')
+flops, macs, params = calculate_flops(model=model, 
+                                      input_shape=(1, 1, 416, 416),
+                                      output_as_string=True,
+                                      output_precision=4)
+print("Alexnet FLOPs:%s   MACs:%s   Params:%s \n" %(flops, macs, params))
 
 
 # Measure GPU memory usage
+torch.cuda.empty_cache()
 start_memory = torch.cuda.memory_allocated()
+# measure the memory cost of initializing our model. 
+model=MambaFormer(in_channels=1).cuda()
+model.eval()
 with torch.no_grad():
     model_output = model(input)
+    torch.cuda.synchronize()
 end_memory = torch.cuda.memory_allocated()
 total_memory_reserved = torch.cuda.memory_reserved()
 
