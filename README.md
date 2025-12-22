@@ -80,19 +80,22 @@ python test_clinic.py --save_path ./real --checkpoint ../checkpoint/MARMamba_ckp
 ### Comparison Results
 
 <details>
-<summary><strong>Different Scales of Metal</strong> (click to expand) </summary>
-    <img src='Figures/Metal.png'>
+<summary><strong>Different Scales of Metal (Includes metal areas)</strong> (click to expand) </summary>
+    <img src='Figures/has_metal_large_medium.png'>
+  	<img src='Figures/has_metal_small_tiny.png'>
 </details>
 
 <details>
-<summary><strong>Full Images</strong> (click to expand) </summary>
-    <img src='Figures/Full_image.png'>
+<summary><strong>Different Scales of Metal (not including metal areas)</strong> (click to expand) </summary>
+    <img src='Figures/no_metal_large_medium.png'>
+  	<img src='Figures/no_metal_small_tiny.png'>
 </details>
 
 <details>
 <summary><strong>MACs and Memory</strong> (click to expand) </summary>
-    <img src='Figures/MACs_memory.png'>
+    <img src='Figures/mac_memory.png'>
 </details>
+
 
 <details>
 <summary><strong>Visual Comparsion on CLINIC-metal</strong> (click to expand) </summary>
