@@ -66,10 +66,10 @@ We also provide an auto-training script named `run.py` for training by using str
 For inference and evaluation on **SynDeepLesion** dataset, run the following command in the `test/` path:
 
 ```
-python test_deeplesion.py -save_place ./metal -checkpoint ../checkpoint/MARMamba_ckpt -val_data_dir /root/autodl-tmp/SynDeepLesion -test_mode metal
+python test_deeplesion.py -save_place ./metal -checkpoint ../checkpoint/MARMamba_ckpt -val_data_dir /root/autodl-tmp/SynDeepLesion -test_mode no_metal
 ```
 
-If you need to evaluate including the metal regions, change the parameter `-test_mode metal` to `-test_mode full_image`.
+If you need to evaluate including the metal regions, change the parameter `-test_mode no_metal` to `-test_mode has_metal`.
 
 To evaluate on **CLINIC-metal** dataset, run the following command in the `test/`path:
 
