@@ -1,6 +1,7 @@
 ## MARMamba
 
-This is the source code for MARMamba in paper "**Balancing Efficiency and Restoration: Lightweight Mamba-Based Model for CT Metal Artifact Reduction**".
+This is the source code for the paper "**Balancing Efficiency and Restoration: Lightweight Mamba-Based Model for CT Metal Artifact Reduction**". Accepted by **IEEE Transactions on Radiation and Plasma Medical Sciences**.
+
 
 ### Architecture
 
