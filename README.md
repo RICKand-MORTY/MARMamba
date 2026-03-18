@@ -2,6 +2,7 @@
 
 This is the source code for the paper "**Balancing Efficiency and Restoration: Lightweight Mamba-Based Model for CT Metal Artifact Reduction**". Accepted by **IEEE Transactions on Radiation and Plasma Medical Sciences**.
 
+Paper link: [MARMamba](https://ieeexplore.ieee.org/document/11437542)
 
 ### Architecture
 
